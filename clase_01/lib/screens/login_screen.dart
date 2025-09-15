@@ -1,3 +1,5 @@
+import 'package:clase_01/database/users_database.dart';
+import 'package:clase_01/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -9,9 +11,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController conUser = TextEditingController();
-  TextEditingController conPwd = TextEditingController();
+  final conUser = TextEditingController();
+  final conPwd = TextEditingController();
   bool isValidating = false;
+  final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,30 @@ class _LoginScreenState extends State<LoginScreen> {
       obscureText: true,
       controller: conPwd,
       decoration: InputDecoration(hintText: "Contraseña"),
+    );
+
+    final btnLogin = IconButton(
+        onPressed: () {
+          _onLogin(context);
+          /*isValidating = true;
+          //Cambio de variable, debo renderizar otra vez
+          setState(() {
+            print(isValidating);
+          });
+          Future.delayed(Duration(milliseconds: 3000)).then(
+            (value) => Navigator.pushNamed(context, '/home'),
+          );*/
+        },
+        icon: Icon(
+          Icons.login,
+          size: 40,
+        ));
+
+    final btnRegister = ElevatedButton(
+      onPressed: () {
+        Navigator.pushNamed(context, '/sign_in');
+      },
+      child: const Text("Sign In"),
     );
 
     return Scaffold(
@@ -43,7 +70,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Text(
                 "Login Minecraft",
                 style: TextStyle(
-                    color: Colors.brown, fontSize: 35, fontFamily: "Minecraft"),
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 35,
+                    fontFamily: "Minecraft"),
               ),
             ),
             Positioned(
@@ -53,29 +82,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.2,
                   decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.circular(30)),
-                  child: Column(
-                    children: [
-                      txtUser,
-                      txtPwd,
-                      IconButton(
-                          onPressed: () {
-                            isValidating = true;
-                            //Cambio de variable, debo renderizar otra vez
-                            setState(() {
-                              print(isValidating);
-                            });
-                            Future.delayed(Duration(microseconds: 10000)).then(
-                              (value) => Navigator.pushNamed(context, '/home'),
-                            );
-                          },
-                          icon: Icon(
-                            Icons.login,
-                            size: 40,
-                          ))
-                    ],
-                  ),
+                  child: Column(children: [
+                    txtUser,
+                    txtPwd,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(child: btnLogin),
+                          SizedBox(
+                              width: 10), // espacio entre botones (opcional)
+                          Expanded(child: btnRegister),
+                        ],
+                      ),
+                    )
+                  ]),
                 )),
             Positioned(
               top: 300,
@@ -87,5 +110,43 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void _showMessage(BuildContext context, String text, [Color? color]) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(text), backgroundColor: color),
+    );
+  }
+
+  Future<void> _onLogin(BuildContext context) async {
+    final email = conUser.text.trim();
+    final password = conPwd.text;
+
+    if (email.isEmpty) {
+      _showMessage(context, "El email es obligatorio", Colors.red);
+      return;
+    }
+    if (!emailRegex.hasMatch(email)) {
+      _showMessage(context, "El email no tiene un formato válido", Colors.red);
+      return;
+    }
+    if (password.isEmpty) {
+      _showMessage(context, "La contraseña es obligatoria", Colors.red);
+      return;
+    }
+
+    try {
+      final currentUser = await UsersDatabase().validateLogin(email, password);
+      if (currentUser != null) {
+        _showMessage(context, "Iniciando Sesión", Colors.green);
+        Future.delayed(Duration(milliseconds: 2000)).then(
+          (value) => Navigator.pushNamed(context, '/home'),
+        );
+      } else {
+        _showMessage(context, "Credenciales Incorrectas", Colors.red);
+      }
+    } catch (e) {
+      _showMessage(context, "Error: $e", Colors.red);
+    }
   }
 }
