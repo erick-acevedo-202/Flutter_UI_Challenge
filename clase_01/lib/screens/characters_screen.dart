@@ -71,11 +71,13 @@ class CharactersScreen extends StatelessWidget {
               child: Transform.translate(
                 offset: Offset(-30, 0),
                 child: Container(
-                  child: Image.asset(
-                    mob.image,
-                    width: rowHeight,
-                    height: rowHeight,
-                  ),
+                  child: Hero(
+                      tag: mob.name,
+                      child: Image.asset(
+                        mob.image,
+                        width: rowHeight,
+                        height: rowHeight,
+                      )),
                 ),
               ),
             ),

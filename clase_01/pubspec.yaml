@@ -69,6 +69,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/sbux_assets/
   
   #   - images/a_dot_ham.jpeg
 
@@ -87,6 +88,11 @@ flutter:
     - family: Minecraft
       fonts:
           - asset: fonts/Minecraft.ttf
+
+    - family: Raleway
+      fonts:
+          - asset: fonts/Raleway_italic.ttf
+          - asset: fonts/Raleway.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

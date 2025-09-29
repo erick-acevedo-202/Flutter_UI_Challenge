@@ -260,12 +260,14 @@ class _CharacterDetailsImage extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
               ),
               Center(
-                child: Image.asset(
-                  mob.image,
-                  height: 400,
-                  width: 400,
-                  fit: BoxFit.contain,
-                ),
+                child: Hero(
+                    tag: mob.name,
+                    child: Image.asset(
+                      mob.image,
+                      height: 400,
+                      width: 400,
+                      fit: BoxFit.contain,
+                    )),
               ),
             ],
           ),

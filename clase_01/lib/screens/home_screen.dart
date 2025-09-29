@@ -69,7 +69,34 @@ class _HomeScreenState extends State<HomeScreen> {
           ),*/
         ],
       ),
-      //endDrawer: Drawer(),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            const UserAccountsDrawerHeader(
+              accountName: Text("Erick_202"),
+              accountEmail: Text("erickacevedo38@mgail.com"),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: NetworkImage(
+                    'https://www.w3schools.com/howto/img_avatar.png'),
+              ),
+            ),
+            ListTile(
+              leading: Image.asset("assets/icon_chest.png"),
+              title: Text("List Movies"),
+              subtitle: Text("Database Movies"),
+              trailing: Icon(Icons.chevron_right),
+              onTap: () => Navigator.pushNamed(context, "/listdb"),
+            ),
+            ListTile(
+              leading: Image.asset("assets/sbux_assets/icon_starbucks.png"),
+              title: Text("Starbucks"),
+              subtitle: Text("Home"),
+              trailing: Icon(Icons.chevron_right),
+              onTap: () => Navigator.pushNamed(context, "/sbux_home"),
+            )
+          ],
+        ),
+      ),
       body: _listOfWidget[selectedIndex]
       /*Center(
         child: Text("Menú de Opciones"),

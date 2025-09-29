@@ -1,6 +1,10 @@
+import 'package:clase_01/screens/add_movie_screen.dart';
 import 'package:clase_01/screens/home_screen.dart';
+import 'package:clase_01/screens/list_movies.dart';
 import 'package:clase_01/screens/login_screen.dart';
 import 'package:clase_01/screens/register_screen.dart';
+import 'package:clase_01/screens/sbux_home_screen.dart';
+import 'package:clase_01/screens/sbux_product_details.dart';
 import 'package:clase_01/utils/theme_app.dart';
 import 'package:clase_01/utils/value_listener.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +24,10 @@ class MyApp extends StatelessWidget {
               theme: value ? ThemeApp.darkTheme() : ThemeApp.lightTheme(),
               routes: {
                 "/home": (context) => HomeScreen(),
-                "/sign_in": (context) => RegisterScreen()
+                "/sign_in": (context) => RegisterScreen(),
+                "/listdb": (context) => ListMovies(),
+                "/add": (context) => const AddMovieScreen(),
+                "/sbux_home": (context) => const SbuxHomeScreen(),
               },
               title: "Material App",
               home: LoginScreen(),
