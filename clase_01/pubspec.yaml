@@ -54,6 +54,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  pinput: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -93,6 +94,12 @@ flutter:
       fonts:
           - asset: fonts/Raleway_italic.ttf
           - asset: fonts/Raleway.ttf
+    
+    - family: Poppins
+      fonts:
+          - asset: fonts/Poppins_bold.ttf
+          - asset: fonts/Poppins_italic.ttf
+          - asset: fonts/Poppins_regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

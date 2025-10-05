@@ -3,8 +3,10 @@ import 'package:clase_01/screens/home_screen.dart';
 import 'package:clase_01/screens/list_movies.dart';
 import 'package:clase_01/screens/login_screen.dart';
 import 'package:clase_01/screens/register_screen.dart';
+import 'package:clase_01/screens/sbux_delivery_screen.dart';
 import 'package:clase_01/screens/sbux_home_screen.dart';
-import 'package:clase_01/screens/sbux_product_details.dart';
+import 'package:clase_01/screens/sbux_payment_feedback.dart';
+import 'package:clase_01/screens/sbux_pin_screen.dart';
 import 'package:clase_01/utils/theme_app.dart';
 import 'package:clase_01/utils/value_listener.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +30,9 @@ class MyApp extends StatelessWidget {
                 "/listdb": (context) => ListMovies(),
                 "/add": (context) => const AddMovieScreen(),
                 "/sbux_home": (context) => const SbuxHomeScreen(),
+                "/sbux_delivery": (context) => const SbuxDeliveryScreen(),
+                "/sbux_pin": (context) => const SbuxPinScreen(),
+                "/sbux_pay_feed": (context) => const SbuxPaymentFeedback()
               },
               title: "Material App",
               home: LoginScreen(),

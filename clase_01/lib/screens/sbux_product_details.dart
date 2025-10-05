@@ -1,3 +1,5 @@
+import 'package:clase_01/models/order_items.dart';
+import 'package:clase_01/models/order_model.dart';
 import 'package:clase_01/models/product_model.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +27,7 @@ class _SbuxProductDetailsState extends State<SbuxProductDetails> {
   @override
   Widget build(BuildContext context) {
     double currentTotal = getTotal();
+
     // CONTADOR DE CANTIDAD
     final Widget _quantityLabel = Text(
       quantity.toString(),
@@ -86,7 +89,7 @@ class _SbuxProductDetailsState extends State<SbuxProductDetails> {
             backgroundColor: Color.fromARGB(255, 0, 98, 59),
             child: IconButton(
               onPressed: () {
-                if (quantity < 10) {
+                if (quantity < 9) {
                   setState(() {
                     prevQuantity = quantity;
                     quantity = quantity + 1;
@@ -174,17 +177,19 @@ class _SbuxProductDetailsState extends State<SbuxProductDetails> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 5),
-              child: IconButton(
-                onPressed: () {
-                  setState(() {});
+              child: ValueListenableBuilder<bool>(
+                valueListenable: widget.product.is_favorite,
+                builder: (context, isFavorite, child) {
+                  return IconButton(
+                    onPressed: () {
+                      widget.product.is_favorite.value =
+                          !widget.product.is_favorite.value;
+                    },
+                    icon: isFavorite
+                        ? Image.asset("assets/sbux_assets/vector_like.png")
+                        : Image.asset("assets/sbux_assets/vector_like_off.png"),
+                  );
                 },
-                icon: widget.product.is_favorite
-                    ? Image.asset(
-                        'assets/sbux_assets/icon_like.png',
-                      )
-                    : Image.asset(
-                        'assets/sbux_assets/icon_like_off.png',
-                      ),
               ),
             )
           ],
@@ -313,7 +318,28 @@ class _SbuxProductDetailsState extends State<SbuxProductDetails> {
               child: Padding(
                 padding: EdgeInsets.only(top: 20),
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      String currentSize = _currentDrinkIndex == 1
+                          ? "Tall"
+                          : _currentDrinkIndex == 2
+                              ? "Grande"
+                              : "Venti";
+                      //Add Order Item
+                      OrderItem currItem = OrderItem(
+                          product: widget.product,
+                          size: currentSize,
+                          quantity: quantity,
+                          subtotal: currentTotal);
+                      orderItems.add(currItem);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text("Item Added to Cart"),
+                            backgroundColor: Color.fromARGB(255, 0, 98, 59)),
+                      );
+
+                      Navigator.pushNamed(context, "/sbux_delivery");
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 0, 98, 59),
                       elevation: 0,

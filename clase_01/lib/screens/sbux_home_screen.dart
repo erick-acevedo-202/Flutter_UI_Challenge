@@ -64,7 +64,10 @@ class _SbuxHomeScreenState extends State<SbuxHomeScreen> {
       onTap: (int index) {
         setState(() {
           _currentTabIndex = index;
-          //print("CURRENT INDEX: ${_currentTabIndex} ");
+          print("CURRENT INDEX: ${_currentTabIndex} ");
+          if (index == 1) {
+            Navigator.pushNamed(context, "/sbux_delivery");
+          }
         });
       },
     );
@@ -203,12 +206,21 @@ class _SbuxHomeScreenState extends State<SbuxHomeScreen> {
                             color: Color.fromARGB(255, 0, 98, 59)),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: product.is_favorite
-                          ? Image.asset("assets/sbux_assets/vector_like.png")
-                          : Image.asset(
-                              "assets/sbux_assets/vector_like_off.png"),
+                    ValueListenableBuilder<bool>(
+                      valueListenable: product.is_favorite,
+                      builder: (context, isFavorite, child) {
+                        return IconButton(
+                          onPressed: () {
+                            product.is_favorite.value =
+                                !product.is_favorite.value;
+                          },
+                          icon: isFavorite
+                              ? Image.asset(
+                                  "assets/sbux_assets/vector_like.png")
+                              : Image.asset(
+                                  "assets/sbux_assets/vector_like_off.png"),
+                        );
+                      },
                     ),
                   ],
                 )

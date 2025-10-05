@@ -50,9 +50,9 @@ class MoviesDatabase {
     return con!.delete(table, where: 'idMovie = ?', whereArgs: [id]);
   }
 
-  Future<List<MovieDao>> SELECT() async {
+  Future<List<MovieDao>> SELECT(String table) async {
     var con = await database;
-    final res = await con!.query("tblMovies");
+    final res = await con!.query(table);
     return res
         .map(
           (movie) => MovieDao.fromMap(movie),
