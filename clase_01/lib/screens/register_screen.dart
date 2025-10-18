@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:clase_01/database/users_database.dart';
+import 'package:clase_01/firebase/fire_auth.dart';
 import 'package:clase_01/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
@@ -25,6 +27,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordController = TextEditingController();
 
   final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+
+  FireAuth? fireAuth;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fireAuth = FireAuth();
+  }
 
   @override
   void dispose() {
@@ -248,6 +259,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
       avatarPath: avatarPath,
     );
 
+    //Registrar con Firebase
+    fireAuth!.registerUser(newUser.email, newUser.password).then((newUser) {
+      try {
+        if (newUser != null) {
+          _showMessage(context, "Usuario registrado en Firebase con exito",
+              Colors.green);
+        }
+      } catch (e) {
+        _showMessage(context, "Error: $e", Colors.red);
+      }
+    });
+
+    /* BASE DE DATOS LOCAL
+    
     try {
       await UsersDatabase().insertUser(newUser);
       _showMessage(context, "Usuario registrado con exito", Colors.green);
@@ -256,6 +281,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     } catch (e) {
       _showMessage(context, "Error: $e", Colors.red);
-    }
+    }*/
   }
 }

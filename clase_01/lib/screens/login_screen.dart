@@ -1,4 +1,5 @@
 import 'package:clase_01/database/users_database.dart';
+import 'package:clase_01/firebase/fire_auth.dart';
 import 'package:clase_01/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -15,6 +16,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final conPwd = TextEditingController();
   bool isValidating = false;
   final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+
+  FireAuth? fireAuth;
+
+  @override
+  void initState() {
+    super.initState();
+    fireAuth = FireAuth();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,29 +131,26 @@ class _LoginScreenState extends State<LoginScreen> {
     final email = conUser.text.trim();
     final password = conPwd.text;
 
-    if (email.isEmpty) {
-      _showMessage(context, "El email es obligatorio", Colors.red);
-      return;
-    }
-    if (!emailRegex.hasMatch(email)) {
-      _showMessage(context, "El email no tiene un formato válido", Colors.red);
-      return;
-    }
-    if (password.isEmpty) {
-      _showMessage(context, "La contraseña es obligatoria", Colors.red);
-      return;
-    }
-
     try {
-      final currentUser = await UsersDatabase().validateLogin(email, password);
+      /*final currentUser = await UsersDatabase().validateLogin(email, password);
       if (currentUser != null) {
         _showMessage(context, "Iniciando Sesión", Colors.green);
         Future.delayed(Duration(milliseconds: 2000)).then(
           (value) => Navigator.pushNamed(context, '/home'),
         );
-      } else {
+      }
+      else {
         _showMessage(context, "Credenciales Incorrectas", Colors.red);
       }
+       */
+      final user = await fireAuth!.loginUser(email, password);
+      //Cuando reciba el usuario lo voy a enviar como parametro al home
+      if (user!.uid != "") {
+        _showMessage(context, "Iniciando Sesión Firebase", Colors.green);
+        Navigator.pushNamed(context, '/home');
+      }
+
+      ;
     } catch (e) {
       _showMessage(context, "Error: $e", Colors.red);
     }

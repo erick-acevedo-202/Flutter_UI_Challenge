@@ -1,5 +1,7 @@
+import 'package:clase_01/models/user_model.dart';
 import 'package:clase_01/screens/characters_screen.dart';
 import 'package:clase_01/utils/value_listener.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_clipped_nav_bar/sliding_clipped_nav_bar.dart';
 
@@ -14,10 +16,13 @@ class _HomeScreenState extends State<HomeScreen> {
   late PageController _pageController;
   int selectedIndex = 0;
   bool _colorful = false;
+  User? user;
+
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: selectedIndex);
+    //user = ModalRoute.of(context)!.settings.arguments as User?;
   }
 
   void onButtonPressed(int index) {
@@ -32,6 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //final User? user = ModalRoute.of(context)!.settings.arguments as User?;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -74,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const UserAccountsDrawerHeader(
               accountName: Text("Erick_202"),
-              accountEmail: Text("erickacevedo38@mgail.com"),
+              accountEmail: Text("Erick Acevedo"),
               currentAccountPicture: CircleAvatar(
                 backgroundImage: NetworkImage(
                     'https://www.w3schools.com/howto/img_avatar.png'),
@@ -93,6 +100,13 @@ class _HomeScreenState extends State<HomeScreen> {
               subtitle: Text("Home"),
               trailing: Icon(Icons.chevron_right),
               onTap: () => Navigator.pushNamed(context, "/sbux_home"),
+            ),
+            ListTile(
+              leading: Image.asset("assets/icon_spotify.png"),
+              title: Text("List Songs"),
+              subtitle: Text("Songs Database"),
+              trailing: Icon(Icons.chevron_right),
+              onTap: () => Navigator.pushNamed(context, "/list_songs"),
             )
           ],
         ),
