@@ -1,4 +1,5 @@
 import 'package:clase_01/database/movies_database.dart';
+import 'package:clase_01/services/api_movies_services.dart';
 import 'package:flutter/material.dart';
 
 class ListMovies extends StatefulWidget {
@@ -10,6 +11,7 @@ class ListMovies extends StatefulWidget {
 
 class _ListMoviesState extends State<ListMovies> {
   MoviesDatabase? moviesDB;
+  ApiMoviesServices? apiMovies;
 
   @override
   void initState() {
@@ -84,6 +86,7 @@ class _ListMoviesState extends State<ListMovies> {
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               final obj = snapshot.data![index];
+              //final obj = apiMovies!.getMovies()[index];
               return Container(
                 height: 111,
                 color: const Color.fromARGB(255, 47, 128, 20),

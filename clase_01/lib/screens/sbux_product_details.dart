@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:clase_01/database/product_database.dart';
 import 'package:clase_01/models/order_items.dart';
 import 'package:clase_01/models/order_model.dart';
 import 'package:clase_01/models/product_model.dart';
@@ -19,6 +22,14 @@ class _SbuxProductDetailsState extends State<SbuxProductDetails> {
   int _currentDrinkIndex = 1;
   double total = 0;
   double extra_cost = 0;
+
+  ProductDatabase? productsDB;
+
+  @override
+  void initState() {
+    super.initState();
+    productsDB = ProductDatabase();
+  }
 
   double getTotal() {
     return (widget.product.price + extra_cost) * quantity;
@@ -177,15 +188,16 @@ class _SbuxProductDetailsState extends State<SbuxProductDetails> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 5),
-              child: ValueListenableBuilder<bool>(
+              child: ValueListenableBuilder<int>(
                 valueListenable: widget.product.is_favorite,
                 builder: (context, isFavorite, child) {
                   return IconButton(
                     onPressed: () {
                       widget.product.is_favorite.value =
-                          !widget.product.is_favorite.value;
+                          1 - widget.product.is_favorite.value;
+                      productsDB!.UPDATE('tblProducts', widget.product.toMap());
                     },
-                    icon: isFavorite
+                    icon: isFavorite == 1
                         ? Image.asset("assets/sbux_assets/vector_like.png")
                         : Image.asset("assets/sbux_assets/vector_like_off.png"),
                   );
@@ -211,10 +223,19 @@ class _SbuxProductDetailsState extends State<SbuxProductDetails> {
                         ),
                         Hero(
                           tag: widget.product.product_name,
-                          child: Image.asset(
+                          child: widget.product.image_path.startsWith('assets')
+                              ? Image.asset(
+                                  widget.product.image_path,
+                                  height: 200,
+                                )
+                              : Image.file(
+                                  File(widget.product.image_path),
+                                  height: 200,
+                                ),
+                          /*Image.asset(
                             widget.product.image_path,
                             height: 200,
-                          ),
+                          ),*/
                         ),
                         SizedBox(
                           height: 40,
@@ -230,46 +251,63 @@ class _SbuxProductDetailsState extends State<SbuxProductDetails> {
                 height: 50,
                 width: 350,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 10, top: 15),
-                  child: Text(
-                    widget.product.category,
-                    style: const TextStyle(
-                        fontFamily: 'Raleway',
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold),
-                  ),
-                )),
+                    padding: EdgeInsets.only(left: 10, top: 15),
+                    child: FutureBuilder(
+                      future: productsDB!
+                          .getCategoryNameById(widget.product.category_id!),
+                      builder: (context, snapshot) {
+                        return Text(snapshot.data ?? "Cargando...",
+                            style: const TextStyle(
+                                fontFamily: 'Raleway',
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold),
+                            overflow: TextOverflow.ellipsis);
+                      },
+                    ))),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 30),
-                  child: Text(
-                    widget.product.product_name,
-                    style: const TextStyle(
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 30),
+                    child: Text(
+                      widget.product.product_name,
+                      style: const TextStyle(
                         fontFamily: "Raleway_italic",
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
-                        color: Colors.black),
+                        color: Colors.black,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                 ),
-                Padding(
+                Container(
+                  // Contenedor fijo
+                  width: 100,
+                  child: Padding(
                     padding: EdgeInsets.only(right: 40),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         const Icon(
                           Icons.star,
                           color: Colors.amber,
+                          size: 20,
                         ),
+                        const SizedBox(width: 4),
                         Text(
                           widget.product.stars.toString(),
                           style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Color.fromARGB(255, 191, 191, 191)),
-                        )
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Color.fromARGB(255, 191, 191, 191),
+                          ),
+                        ),
                       ],
-                    )),
+                    ),
+                  ),
+                ),
               ],
             ),
             SizedBox(
@@ -326,6 +364,9 @@ class _SbuxProductDetailsState extends State<SbuxProductDetails> {
                               : "Venti";
                       //Add Order Item
                       OrderItem currItem = OrderItem(
+                          itemID: orderItems.isEmpty
+                              ? 1
+                              : orderItems.last.itemID + 1,
                           product: widget.product,
                           size: currentSize,
                           quantity: quantity,

@@ -14,14 +14,30 @@ class _SongsWidgetState extends State<SongsWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+      height: 70,
+      padding: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blueGrey),
+        color: Colors.grey[50],
+      ),
       child: Row(
         children: [
           FadeInImage(
             placeholder: AssetImage("assets/gif_loading.gif"),
-            image: NetworkImage(widget.song['conver']),
+            //fadeInDuration: Duration(seconds: 4),
+            image: NetworkImage(widget.song['cover']),
           ),
+          /*ListTile(
+            title: Text(widget.song['title']),
+            subtitle: Text(widget.song['artist']),
+          )*/
+          Column(
+            children: [
+              Text(widget.song['title']),
+              Text(widget.song['artist']),
+            ],
+          ),
+          IconButton(onPressed: () {}, icon: Icon(Icons.abc)),
         ],
       ),
     );

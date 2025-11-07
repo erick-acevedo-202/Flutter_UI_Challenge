@@ -1,7 +1,7 @@
 import 'package:clase_01/models/order_items.dart';
 
 class OrderModel {
-  final String orderId;
+  final int orderId;
   final List<OrderItem> items;
   final DateTime date;
   final String status;
@@ -21,4 +21,4 @@ class OrderModel {
 List<OrderItem> orderItems = [];
 
 OrderModel myOrder =
-    OrderModel(orderId: "ORD-1", items: orderItems, date: DateTime.now());
+    OrderModel(orderId: 1, items: orderItems, date: DateTime.now());

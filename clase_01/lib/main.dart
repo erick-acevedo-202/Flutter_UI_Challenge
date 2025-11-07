@@ -1,7 +1,11 @@
 import 'package:clase_01/firebase_options.dart';
+import 'package:clase_01/screens/list_series_screen.dart';
+import 'package:clase_01/screens/upd_category_screen.dart';
 import 'package:clase_01/screens/add_movie_screen.dart';
+import 'package:clase_01/screens/add_product_screen.dart';
 import 'package:clase_01/screens/add_song_screen.dart';
 import 'package:clase_01/screens/home_screen.dart';
+import 'package:clase_01/screens/list_api_movies.dart';
 import 'package:clase_01/screens/list_movies.dart';
 import 'package:clase_01/screens/list_songs_screen.dart';
 import 'package:clase_01/screens/login_screen.dart';
@@ -44,7 +48,11 @@ class MyApp extends StatelessWidget {
                 "/sbux_pin": (context) => const SbuxPinScreen(),
                 "/sbux_pay_feed": (context) => const SbuxPaymentFeedback(),
                 "/list_songs": (context) => const ListSongsScreen(),
-                "/add_song": (context) => const AddSongScreen()
+                "/add_song": (context) => const AddSongScreen(),
+                "/add_product": (context) => const AddProductScreen(),
+                "/upd_category": (context) => const UpdCategoryScreen(),
+                "/api_movies": (context) => const ListApiMovies(),
+                "/api_series": (context) => const ListSeriesScreen()
               },
               title: "Material App",
               home: LoginScreen(),

@@ -89,10 +89,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: Image.asset("assets/icon_chest.png"),
-              title: Text("List Movies"),
+              title: Text("List API Movies"),
               subtitle: Text("Database Movies"),
               trailing: Icon(Icons.chevron_right),
-              onTap: () => Navigator.pushNamed(context, "/listdb"),
+              onTap: () => Navigator.pushNamed(context, "/api_movies"),
+            ),
+            ListTile(
+              leading: Image.asset("assets/icon_netflix.png"),
+              title: Text("List API Series"),
+              subtitle: Text("FutureGroup"),
+              trailing: Icon(Icons.chevron_right),
+              onTap: () => Navigator.pushNamed(context, "/api_series"),
             ),
             ListTile(
               leading: Image.asset("assets/sbux_assets/icon_starbucks.png"),

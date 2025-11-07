@@ -1,4 +1,5 @@
 import 'package:clase_01/firebase/songs_firebase.dart';
+import 'package:clase_01/widgets/songs_widget.dart';
 import 'package:flutter/material.dart';
 
 class ListSongsScreen extends StatefulWidget {
@@ -19,7 +20,9 @@ class _ListSongsScreenState extends State<ListSongsScreen> {
           actions: [
             IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, "/add_song");
+                  Navigator.pushNamed(context, "/add_song").then(
+                    (value) => setState(() {}),
+                  );
                 },
                 icon: Icon(Icons.add))
           ],
@@ -31,9 +34,12 @@ class _ListSongsScreenState extends State<ListSongsScreen> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(
+                  shrinkWrap: true,
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
-                    return Text(snapshot.data!.docs[index].get("title"));
+                    //return Text(snapshot.data!.docs[index].get("title"));
+                    return SongsWidget(snapshot.data!.docs[index].data()
+                        as Map<String, dynamic>);
                   },
                 );
               } else {

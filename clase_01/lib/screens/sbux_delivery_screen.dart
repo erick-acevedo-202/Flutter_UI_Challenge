@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:clase_01/models/order_items.dart';
 import 'package:clase_01/models/order_model.dart' as order_model;
 import 'package:clase_01/models/product_model.dart';
@@ -62,74 +64,121 @@ class _SbuxDeliveryScreenState extends State<SbuxDeliveryScreen> {
       );
     }
 
+    Widget _getImageWidget(String imagePath) {
+      if (imagePath.startsWith('assets')) {
+        return Image.asset(
+          imagePath,
+          width: 30,
+          height: 66,
+        );
+      } else {
+        return Image.file(
+          File(imagePath),
+          width: 30,
+          height: 66,
+        );
+      }
+    }
+
+    void _removeOrderItem(OrderItem item) {
+      setState(() {
+        order_model.orderItems
+            .removeWhere((order) => order.itemID == item.itemID);
+      });
+    }
+
     Widget _buildDrinkDetails(OrderItem item) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.only(left: 15, right: 15),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300, width: 1.5),
-          borderRadius: BorderRadius.circular(30),
+      return Dismissible(
+        key: Key(item.itemID.toString()), // Necesita una key única
+        background: Container(
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: const Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: EdgeInsets.only(right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(Icons.delete, color: Colors.white, size: 30),
+                  SizedBox(width: 8),
+                  Text('Delete',
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                ],
+              ),
+            ),
+          ),
         ),
-        child: Row(
-          children: [
-            Image.asset(
-              item.product.image_path,
-              width: 30,
-              height: 66,
-            ),
-            const SizedBox(width: 5),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.product.product_name,
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      color: Color.fromARGB(255, 0, 98, 59),
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12,
+        direction: DismissDirection.endToStart, // Solo deslizar a la izquierda
+        onDismissed: (direction) {
+          _removeOrderItem(item);
+        },
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.only(left: 15, right: 15),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade300, width: 1.5),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Row(
+            children: [
+              _getImageWidget(item.product.image_path),
+              const SizedBox(width: 5),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.product.product_name,
+                      style: TextStyle(
+                        fontFamily: "Poppins",
+                        color: Color.fromARGB(255, 0, 98, 59),
+                        fontWeight: FontWeight.w800,
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
-                  Text(
-                    item.size,
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      color: Colors.grey,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+                    Text(
+                      item.size,
+                      style: TextStyle(
+                        fontFamily: "Poppins",
+                        color: Colors.grey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  Text(
-                    "\$${item.subtotal}",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                    Text(
+                      "\$${item.subtotal}",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
-            Column(children: [
-              Row(
-                children: [
-                  _circleTag(
-                      item.quantity.toString(), Color.fromARGB(255, 0, 98, 59)),
-                  const SizedBox(width: 8),
-                  _circleTag("L", Color.fromARGB(255, 222, 135, 55)),
-                ],
+              const SizedBox(width: 10),
+              Column(children: [
+                Row(
+                  children: [
+                    _circleTag(item.quantity.toString(),
+                        Color.fromARGB(255, 0, 98, 59)),
+                    const SizedBox(width: 8),
+                    _circleTag("L", Color.fromARGB(255, 222, 135, 55)),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _buildLabelSection(" -5★ ", 8.0, 12, Colors.black)
+              ]),
+              const SizedBox(width: 10),
+              const Icon(
+                Icons.bookmark,
+                color: Color.fromARGB(255, 217, 208, 126),
+                size: 20,
               ),
-              const SizedBox(height: 12),
-              _buildLabelSection(" -5★ ", 8.0, 12, Colors.black)
-            ]),
-            const SizedBox(width: 10),
-            const Icon(
-              Icons.bookmark,
-              color: Color.fromARGB(255, 217, 208, 126),
-              size: 20,
-            ),
-          ],
+            ],
+          ),
         ),
       );
     }
