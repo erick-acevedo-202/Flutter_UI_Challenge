@@ -1,3 +1,4 @@
+import 'package:clase_01/models/order_model.dart';
 import 'package:flutter/material.dart';
 
 class SbuxPaymentFeedback extends StatefulWidget {
@@ -76,15 +77,15 @@ class _SbuxPaymentFeedbackState extends State<SbuxPaymentFeedback> {
               const SizedBox(height: 5),
 
               RichText(
-                text: const TextSpan(
+                text: TextSpan(
                   text: "You get ",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 15,
                     color: Colors.orangeAccent,
                   ),
                   children: [
                     TextSpan(
-                      text: "4 stars ",
+                      text: " ${myOrder.star_points} Star Points ",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextSpan(text: "reward"),
@@ -110,7 +111,9 @@ class _SbuxPaymentFeedbackState extends State<SbuxPaymentFeedback> {
               const SizedBox(height: 35),
 
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.popAndPushNamed(context, '/history_calendar');
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF00623B),
                   minimumSize: const Size(200, 50),

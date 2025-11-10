@@ -83,13 +83,13 @@ class _SbuxDeliveryScreenState extends State<SbuxDeliveryScreen> {
     void _removeOrderItem(OrderItem item) {
       setState(() {
         order_model.orderItems
-            .removeWhere((order) => order.itemID == item.itemID);
+            .removeWhere((order) => order.item_id == item.item_id);
       });
     }
 
     Widget _buildDrinkDetails(OrderItem item) {
       return Dismissible(
-        key: Key(item.itemID.toString()), // Necesita una key única
+        key: Key(item.item_id.toString()), // Necesita una key única
         background: Container(
           decoration: BoxDecoration(
             color: Colors.red,
@@ -124,14 +124,14 @@ class _SbuxDeliveryScreenState extends State<SbuxDeliveryScreen> {
           ),
           child: Row(
             children: [
-              _getImageWidget(item.product.image_path),
+              _getImageWidget(item.product!.image_path),
               const SizedBox(width: 5),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.product.product_name,
+                      item.product!.product_name,
                       style: TextStyle(
                         fontFamily: "Poppins",
                         color: Color.fromARGB(255, 0, 98, 59),
@@ -440,12 +440,12 @@ class _SbuxDeliveryScreenState extends State<SbuxDeliveryScreen> {
             child: ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: order_model.myOrder.items.length,
+              itemCount: order_model.myOrder.items!.length,
               itemBuilder: (context, index) {
                 return Padding(
                     padding: EdgeInsets.only(top: 5, bottom: 5),
                     child: _buildDrinkDetails(
-                      order_model.myOrder.items[index],
+                      order_model.myOrder.items![index],
                     ));
               },
             ),
@@ -596,7 +596,7 @@ class _SbuxDeliveryScreenState extends State<SbuxDeliveryScreen> {
                         color: Colors.grey.shade500),
                   ),
                   Text(
-                    "\$${order_model.myOrder.total}",
+                    "\$${order_model.myOrder.get_total}",
                     style: TextStyle(
                         fontFamily: "Poppins",
                         fontSize: 12.0,
@@ -639,7 +639,7 @@ class _SbuxDeliveryScreenState extends State<SbuxDeliveryScreen> {
                         color: Color.fromARGB(255, 0, 98, 59)),
                   ),
                   Text(
-                    "\$${order_model.myOrder.total + shippingCharges}",
+                    "\$${order_model.myOrder.get_total + shippingCharges}",
                     style: const TextStyle(
                         fontFamily: "Poppins",
                         fontWeight: FontWeight.bold,

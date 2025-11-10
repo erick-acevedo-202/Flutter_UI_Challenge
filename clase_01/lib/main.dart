@@ -1,4 +1,6 @@
 import 'package:clase_01/firebase_options.dart';
+import 'package:clase_01/screens/dbg_order_details.dart';
+import 'package:clase_01/screens/history_calendar.dart';
 import 'package:clase_01/screens/list_series_screen.dart';
 import 'package:clase_01/screens/upd_category_screen.dart';
 import 'package:clase_01/screens/add_movie_screen.dart';
@@ -52,7 +54,9 @@ class MyApp extends StatelessWidget {
                 "/add_product": (context) => const AddProductScreen(),
                 "/upd_category": (context) => const UpdCategoryScreen(),
                 "/api_movies": (context) => const ListApiMovies(),
-                "/api_series": (context) => const ListSeriesScreen()
+                "/api_series": (context) => const ListSeriesScreen(),
+                "/dbg_order_details": (context) => DbgOrderDetails(),
+                "/history_calendar": (context) => HistoryCalendar()
               },
               title: "Material App",
               home: LoginScreen(),

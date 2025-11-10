@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:math';
 import 'package:clase_01/models/category_model.dart';
+import 'package:clase_01/models/order_items.dart';
+import 'package:clase_01/models/order_model.dart';
 import 'package:clase_01/models/product_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -9,7 +11,7 @@ import 'package:path/path.dart';
 
 class ProductDatabase {
   static final nameDB = "ProductsDB";
-  static final versionDB = 2;
+  static final versionDB = 3;
 
   static Database? _database;
 
@@ -51,10 +53,11 @@ class ProductDatabase {
     String queryOrder = '''
     CREATE TABLE tblOrder(
       order_id INTEGER PRIMARY KEY,
-      date DATE,
+      date TEXT,
       status VARCHAR(15),
       total REAL,
-      itemCount INTEGER
+      itemCount INTEGER,
+      star_points INTEGER
     )
   ''';
     db.execute(queryOrder);
@@ -70,6 +73,46 @@ class ProductDatabase {
     )
   ''';
     db.execute(queryItems);
+  }
+
+  Future<List<OrderModel>> SELECT_orders_byDate(String date) async {
+    var con = await database;
+    final result = await con!.rawQuery('''
+    SELECT * FROM tblOrder 
+    WHERE substr(date, 1, 10) = ?
+  ''', [date]);
+
+    print("DEBUG: Found ${result.length} orders for date: $date");
+    return result.map((map) => OrderModel.fromMap(map)).toList();
+  }
+
+  Future<Map<DateTime, int>> getStarPointsByDate() async {
+    var con = await database;
+    final result = await con!.rawQuery('''
+      SELECT 
+        substr(date, 1, 10) as date_day, 
+        SUM(star_points) as total_stars 
+      FROM tblOrder 
+      WHERE star_points IS NOT NULL
+      GROUP BY substr(date, 1, 10)
+    ''');
+
+    print('DEBUG ORDERS: $result');
+
+    final Map<DateTime, int> starsMap = {};
+
+    for (final row in result) {
+      final dateString = row['date_day'] as String;
+      final totalStars = (row['total_stars'] as num).toInt();
+
+      // Convertir string a DateTime (solo la fecha)
+      final date = DateTime.parse(dateString);
+      final normalizedDate = DateTime.utc(date.year, date.month, date.day);
+
+      starsMap[normalizedDate] = totalStars;
+    }
+
+    return starsMap;
   }
 
   Future<bool> categoryExists(String categoryName) async {
@@ -120,7 +163,7 @@ class ProductDatabase {
 
   Future<int> INSERT(String table, Map<String, dynamic> data) async {
     var con = await database;
-    return con!.insert(table, data);
+    return await con!.insert(table, data);
   }
 
   Future<int> UPDATE(String table, Map<String, dynamic> data) async {
@@ -137,6 +180,22 @@ class ProductDatabase {
         throw Exception("La tabla ${table} No Existe");
       }
     }
+  }
+
+  Future<List<OrderModel>> SELECT_AllOrders() async {
+    var con = await database;
+    final result = await con!.query('tblOrder');
+    return result.map((map) => OrderModel.fromMap(map)).toList();
+  }
+
+  Future<List<OrderItem>> SELECT_ItemsByOrder(int orderId) async {
+    var con = await database;
+    final result = await con!.query(
+      'tblItems',
+      where: 'order_id = ?',
+      whereArgs: [orderId],
+    );
+    return result.map((map) => OrderItem.fromMap(map)).toList();
   }
 /*
   Future<int> UPDATE_Product_Like(int product_id, int like) async {

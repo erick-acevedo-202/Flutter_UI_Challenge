@@ -363,11 +363,14 @@ class _SbuxProductDetailsState extends State<SbuxProductDetails> {
                               ? "Grande"
                               : "Venti";
                       //Add Order Item
+
                       OrderItem currItem = OrderItem(
-                          itemID: orderItems.isEmpty
+                          item_id: orderItems.isEmpty
                               ? 1
-                              : orderItems.last.itemID + 1,
+                              : orderItems.last.item_id + 1,
+                          product_id: widget.product.product_id,
                           product: widget.product,
+                          order_id: 1,
                           size: currentSize,
                           quantity: quantity,
                           subtotal: currentTotal);

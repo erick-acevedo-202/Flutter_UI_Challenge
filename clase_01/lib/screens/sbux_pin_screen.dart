@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:clase_01/database/product_database.dart';
+import 'package:clase_01/models/order_items.dart';
+import 'package:clase_01/models/order_model.dart';
 import 'package:pinput/pinput.dart';
 import 'package:flutter/material.dart';
 
@@ -13,11 +16,19 @@ class _SbuxPinScreenState extends State<SbuxPinScreen> {
   int _secondsRemaining = 30;
   Timer? _timer;
   Color _counterColor = Colors.grey.shade600;
+  ProductDatabase? productsDB;
 
   @override
   void initState() {
     super.initState();
     _startCountdown();
+    productsDB = ProductDatabase();
+  }
+
+  void _showMessage(BuildContext context, String text, [Color? color]) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(text), backgroundColor: color),
+    );
   }
 
   void _startCountdown() {
@@ -120,7 +131,33 @@ class _SbuxPinScreenState extends State<SbuxPinScreen> {
               // OK BUTTON
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, "/sbux_pay_feed");
+                  myOrder.total = myOrder.get_total;
+                  myOrder.itemCount = myOrder.get_itemCount;
+                  //Si gastas más de 100 pesos en compras, obtienes estrellas
+                  if (myOrder.total > 100) {
+                    myOrder.star_points = myOrder.total ~/ 100; //350 -> 3
+                  }
+
+                  print("###### GLOBAL ORDER ####${myOrder.toMap()}");
+
+                  productsDB!.INSERT('tblOrder', myOrder.toMap()).then(
+                    (order_id) {
+                      print("NEW ORDER ID ${order_id}");
+                      int completed = 0;
+                      for (OrderItem item in orderItems) {
+                        item.order_id = order_id;
+                        productsDB!.INSERT('tblItems', item.toMap()).then((_) {
+                          completed++;
+                          if (completed == orderItems.length) {
+                            myOrder.cleanOrder;
+                            _showMessage(
+                                context, "Orden Solicitada!", Colors.green);
+                            Navigator.pushNamed(context, "/sbux_pay_feed");
+                          }
+                        });
+                      }
+                    },
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF00623B),
